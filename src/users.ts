@@ -197,6 +197,10 @@ export default Router()
 			res.jsonp({ user })
 		}
 	})
+	.post('/logout', (req, res) => {
+		res.clearCookie('authorization')
+		res.jsonp({message:"Logout successful"})
+	})
 	.put('/users/:id', validate({ required: true }), update)
 	.put('/[640]{3}/users/:id', validate({ required: true }), update)
 	.patch('/users/:id', validate({ required: false }), update)
