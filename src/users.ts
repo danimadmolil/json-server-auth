@@ -136,6 +136,7 @@ const login: Handler = (req, res, next) => {
 		})
 		.then((accessToken: string) => {
 			const { password: _, ...userWithoutPassword } = user
+            res.cookie('jwt',accessToken,{sameSite:"none",secure:true,httpOnly:true})
 			res.status(200).jsonp({ accessToken, user: userWithoutPassword })
 		})
 		.catch((err) => {
@@ -174,6 +175,24 @@ export default Router()
 	.post('/users|register|signup', validate({ required: true }), create)
 	.post('/[640]{3}/users', validate({ required: true }), create)
 	.post('/login|signin', validate({ required: true }), login)
+	.post('/auth', (req, res) => {
+        const { db } = req.app;
+        console.debug('cookies in request', req.cookies)
+        if (req.cookies.jwt) {
+            try {
+                const { email } = jwt.verify(req.cookies.jwt, constants_1.JWT_SECRET_KEY);
+            const user = db.get('users').filter((user => user.email === email))
+            if (user === undefined) {
+                res.send("you aren't loged in").status(403)
+            }
+            } catch (e) {
+                res.send('yooou are not logedin').status(403)
+           }
+            
+            res.jsonp(user);
+        }
+        res.send("you aren't logedin");
+    })
 	.put('/users/:id', validate({ required: true }), update)
 	.put('/[640]{3}/users/:id', validate({ required: true }), update)
 	.patch('/users/:id', validate({ required: false }), update)
