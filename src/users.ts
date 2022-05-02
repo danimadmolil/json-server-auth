@@ -137,7 +137,7 @@ const login: Handler = (req, res, next) => {
 		})
 		.then((accessToken: string) => {
 			const { password: _, ...userWithoutPassword } = user
-			res.cookie('jwt', accessToken, { sameSite: 'none', secure: true, httpOnly: true })
+			res.cookie('authorization', accessToken, { sameSite: 'none', secure: true, httpOnly: true })
 			res.status(200).jsonp({ accessToken, user: userWithoutPassword })
 		})
 		.catch((err) => {
