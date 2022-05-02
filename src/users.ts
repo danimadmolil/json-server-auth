@@ -189,7 +189,7 @@ export default Router()
 				console.log('tooooken', token)
 				let jwtTransformed = jwt.verify(token, constants_1.JWT_SECRET_KEY)
 				let email = jwtTransformed['email']
-				user = db.get('users').filter((user) => user.email === email)
+				user = db.get('users').filter((user) => user.email === email)[0]
 				if (user === undefined) {
 					res.statusCode = 405
 					res.send("you aren't loged in")
