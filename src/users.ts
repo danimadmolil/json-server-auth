@@ -137,7 +137,11 @@ const login: Handler = (req, res, next) => {
 		})
 		.then((accessToken: string) => {
 			const { password: _, ...userWithoutPassword } = user
-			res.cookie('authorization', `bearer ${accessToken}`, { sameSite: 'none', secure: true, httpOnly: true })
+			res.cookie('authorization', `bearer ${accessToken}`, {
+				sameSite: 'none',
+				secure: true,
+				httpOnly: true,
+			})
 			res.status(200).jsonp({ accessToken, user: userWithoutPassword })
 		})
 		.catch((err) => {
@@ -190,16 +194,18 @@ export default Router()
 					res.statusCode = 405
 					res.send("you aren't loged in")
 				}
+				res.jsonp({ user })
 			} catch (e) {
 				res.statusCode = 406
 				res.send('yooou are not logedin')
 			}
 			res.jsonp({ user })
 		}
+		res.jsonp({ user })
 	})
-	.post('/logout', (req, res) => {
+	.post('/signout', (req, res) => {
 		res.clearCookie('authorization')
-		res.jsonp({message:"Logout successful"})
+		res.jsonp({ message: 'Logout successful' })
 	})
 	.put('/users/:id', validate({ required: true }), update)
 	.put('/[640]{3}/users/:id', validate({ required: true }), update)
