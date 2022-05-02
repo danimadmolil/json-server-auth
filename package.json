@@ -1,9 +1,9 @@
 {
-	"name": "json-server-auth",
+	"name": "@danimadmolil/json-server-auth",
 	"description": "Authentication middleware for JSON Server",
-	"version": "2.1.0",
-	"author": "Jeremy Bensimon",
-	"repository": "github:jeremyben/json-server-auth",
+	"version": "2.1.1",
+	"author":"dani madmolil",
+	"repository": "github:danimadmolil/json-server-auth",
 	"license": "MIT",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",

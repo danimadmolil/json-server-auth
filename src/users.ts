@@ -1,3 +1,4 @@
+import { stringify } from 'querystring';
 import * as bcrypt from 'bcryptjs'
 import { Handler, Router } from 'express'
 import * as jwt from 'jsonwebtoken'
@@ -9,7 +10,7 @@ import {
 	MIN_PASSWORD_LENGTH,
 	SALT_LENGTH,
 } from './constants'
-
+import * as constants_1 from './constants';
 interface User {
 	id: string
 	email: string
@@ -177,11 +178,13 @@ export default Router()
 	.post('/login|signin', validate({ required: true }), login)
 	.post('/auth', (req, res) => {
         const { db } = req.app;
-        console.debug('cookies in request', req.cookies)
-        if (req.cookies.jwt) {
+		console.debug('cookies in request', req.cookies)
+		let user;
+        if (req.cookies.jwt && db) {
             try {
-                const { email } = jwt.verify(req.cookies.jwt, constants_1.JWT_SECRET_KEY);
-            const user = db.get('users').filter((user => user.email === email))
+                let jwtTransformed = jwt.verify(req.cookies.jwt, constants_1.JWT_SECRET_KEY);
+				let email = jwtTransformed['email'];
+				user = db.get('users').filter((user => user.email === email))
             if (user === undefined) {
                 res.send("you aren't loged in").status(403)
             }
@@ -189,7 +192,7 @@ export default Router()
                 res.send('yooou are not logedin').status(403)
            }
             
-            res.jsonp(user);
+            res.jsonp({user});
         }
         res.send("you aren't logedin");
     })
