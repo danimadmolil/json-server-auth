@@ -1,7 +1,7 @@
 {
 	"name": "@danimadmolil/json-server-auth",
 	"description": "Authentication middleware for JSON Server",
-	"version": "2.1.8",
+	"version": "2.1.9",
 	"author":"dani madmolil",
 	"repository": "github:danimadmolil/json-server-auth",
 	"license": "MIT",

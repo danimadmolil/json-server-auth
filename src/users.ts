@@ -203,7 +203,11 @@ export default Router()
 		res.jsonp({ user })
 	})
 	.post('/signout', (req, res) => {
-		res.clearCookie('authorization')
+		res.clearCookie('authorization',{
+            sameSite: 'none',
+            secure: true,
+            httpOnly: true,
+        })
 		res.jsonp({ message: 'Logout successful' })
 	})
 	.put('/users/:id', validate({ required: true }), update)
