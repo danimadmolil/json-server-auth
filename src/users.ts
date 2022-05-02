@@ -1,4 +1,4 @@
-import { stringify } from 'querystring';
+import { stringify } from 'querystring'
 import * as bcrypt from 'bcryptjs'
 import { Handler, Router } from 'express'
 import * as jwt from 'jsonwebtoken'
@@ -10,7 +10,7 @@ import {
 	MIN_PASSWORD_LENGTH,
 	SALT_LENGTH,
 } from './constants'
-import * as constants_1 from './constants';
+import * as constants_1 from './constants'
 interface User {
 	id: string
 	email: string
@@ -137,7 +137,7 @@ const login: Handler = (req, res, next) => {
 		})
 		.then((accessToken: string) => {
 			const { password: _, ...userWithoutPassword } = user
-            res.cookie('jwt',accessToken,{sameSite:"none",secure:true,httpOnly:true})
+			res.cookie('jwt', accessToken, { sameSite: 'none', secure: true, httpOnly: true })
 			res.status(200).jsonp({ accessToken, user: userWithoutPassword })
 		})
 		.catch((err) => {
@@ -177,25 +177,26 @@ export default Router()
 	.post('/[640]{3}/users', validate({ required: true }), create)
 	.post('/login|signin', validate({ required: true }), login)
 	.post('/auth', (req, res) => {
-        const { db } = req.app;
-		console.debug('cookies in request', req.cookies)
-		let user;
-        if (req.cookies.jwt && db) {
-            try {
-                let jwtTransformed = jwt.verify(req.cookies.jwt, constants_1.JWT_SECRET_KEY);
-				let email = jwtTransformed['email'];
-				user = db.get('users').filter((user => user.email === email))
-            if (user === undefined) {
-                res.send("you aren't loged in").status(403)
-            }
-            } catch (e) {
-                res.send('yooou are not logedin').status(403)
-           }
-            
-            res.jsonp({user});
-        }
-        res.send("you aren't logedin");
-    })
+		const { db } = req.app
+		let user
+		if (req.cookies.authorization && db) {
+			try {
+				let [schema, token] = req.cookies.authorization.split(' ')
+				console.log('tooooken', token)
+				let jwtTransformed = jwt.verify(token, constants_1.JWT_SECRET_KEY)
+				let email = jwtTransformed['email']
+				user = db.get('users').filter((user) => user.email === email)
+				if (user === undefined) {
+					res.statusCode = 405
+					res.send("you aren't loged in")
+				}
+			} catch (e) {
+				res.statusCode = 406
+				res.send('yooou are not logedin')
+			}
+			res.jsonp({ user })
+		}
+	})
 	.put('/users/:id', validate({ required: true }), update)
 	.put('/[640]{3}/users/:id', validate({ required: true }), update)
 	.patch('/users/:id', validate({ required: false }), update)
