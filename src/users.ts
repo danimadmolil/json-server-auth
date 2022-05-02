@@ -186,18 +186,17 @@ export default Router()
 		if (req.cookies.authorization && db) {
 			try {
 				let [schema, token] = req.cookies.authorization.split(' ')
-				console.log('tooooken', token)
 				let jwtTransformed = jwt.verify(token, constants_1.JWT_SECRET_KEY)
 				let email = jwtTransformed['email']
-				user = db.get('users').filter((user) => user.email === email)[0]
+				user = db.get('users').find({ email }).value()
 				if (user === undefined) {
-					res.statusCode = 405
-					res.send("you aren't loged in")
+					res.statusCode = 500
+					res.send("Can not find youser")
 				}
 				res.jsonp({ user })
 			} catch (e) {
-				res.statusCode = 406
-				res.send('yooou are not logedin')
+				res.statusCode = 500
+				res.send('you are not logedin')
 			}
 			res.jsonp({ user })
 		}
