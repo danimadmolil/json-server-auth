@@ -141,6 +141,7 @@ const login: Handler = (req, res, next) => {
 				sameSite: 'none',
 				secure: true,
 				httpOnly: true,
+				expires:new Date(Date.now() + 24 * 60 * 60 * 1000)
 			})
 			res.status(200).jsonp({ accessToken, user: userWithoutPassword })
 		})
