@@ -137,7 +137,7 @@ const login: Handler = (req, res, next) => {
 		})
 		.then((accessToken: string) => {
 			const { password: _, ...userWithoutPassword } = user
-			res.cookie('authorization', `bearer ${accessToken}`, {
+			res.cookie('Authorization', `Bearer ${accessToken}`, {
 				sameSite: 'none',
 				secure: true,
 				httpOnly: true,
@@ -184,9 +184,9 @@ export default Router()
 	.post('/auth', (req, res) => {
 		const { db } = req.app
 		let user
-		if (req.cookies.authorization && db) {
+		if (req.cookies.Authorization && db) {
 			try {
-				let [schema, token] = req.cookies.authorization.split(' ')
+				let [schema, token] = req.cookies.Authorization.split(' ')
 				let jwtTransformed = jwt.verify(token, constants_1.JWT_SECRET_KEY)
 				let email = jwtTransformed['email']
 				user = db.get('users').find({ email }).value()
@@ -204,7 +204,7 @@ export default Router()
 		res.jsonp({ user })
 	})
 	.post('/signout', (req, res) => {
-		res.clearCookie('authorization',{
+		res.clearCookie('Authorization',{
             sameSite: 'none',
             secure: true,
             httpOnly: true,
